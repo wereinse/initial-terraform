@@ -101,3 +101,24 @@ resource "azurerm_monitor_metric_alert" "Healthz-webtest-alert" {
     action_group_id = azurerm_monitor_action_group.helium-iac-AG.id
   }
 }
+resource "azurerm_monitor_metric_alert" "Requests-below1-alert" {
+  name                = "${var.NAME}-Requests-below1-Alert"
+  resource_group_name = var.APP_RG_NAME
+  scopes              = [azurerm_application_insights.helium.id]
+  frequency           = var.WV_FREQUENCY
+  window_size         = var.WV_WINDOW_SIZE
+  description         = "Requests below 1"
+  severity            = var.WV_SEVERITY
+  auto_mitigate       = "false"
+  enabled             = "true"
+  criteria {
+    metric_namespace = "Microsoft.Insights/components"
+    metric_name      = "requests/count"
+    aggregation      = "Count"
+    operator         = var.WV_OPERATOR
+    threshold        = var.WV_THRESHOLD
+  }
+  action {
+    action_group_id = azurerm_monitor_action_group.helium-iac-AG.id
+  }
+}
