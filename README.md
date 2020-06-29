@@ -1,8 +1,6 @@
 # Infrastructure as Code for `helium`
 
 > This repository is used to automatically deploy [helium](https://github.com/retaildevcrews/helium) using [terraform](https://www.hashicorp.com/products/terraform)
->
-> TODO - this isn't really the purpose of helium-iac for our customers. This is our internal purpose. I think we need both.
 
 ![License](https://img.shields.io/badge/license-MIT-green.svg)
 ![Terraform Plan](https://github.com/retaildevcrews/helium-iac/workflows/Terraform%20Plan/badge.svg)
@@ -40,21 +38,7 @@
   - will need ACR pull permissions on the SP (done)
 
 - now uses standard TF_NAME url
-  - how do you access / test the web api
-    - need to output the URL
-    - should we include instructions for running webv?
-    - webv works as expected
-      - where to put test files?
-
 - standardized names to manual install
-  - can we name the DB imdb instead of imdb-helium-language?
-  - can we name app TF_NAME without the helium-language?
-  - same for KV
-  - app insights is named helium-csharp-appinsights
-  - can we add -plan to the app service plan name?
-  - container instances is named helium-csharp
-  - availability test is named Healthz-helium-csharp-appinsights
-  - dashboard is named Helium-dashboard-csharp
 
 ## Features
 
@@ -63,18 +47,15 @@
 - one app service plan
 - 3 web apps (API)
 - one AKS Cluster
-- smoker instances running in ACI to test AKS and AppService endpoints
+- WebV running in ACI to test App Service endpoints
 - one CosmosDB
-- 3 Databases
-- 1 Db will need 4 collections to support java
-- 1 Db with 1 collection for .Net and 1 Db for TypeScript
-- 3 app insights
-- 3 key vaults
+- 1 Databases
+- 2 app insights (one for WebV)
+- 1 key vaults
 - standardize endpoints
-  - AppSvc endpoints: bluebell, gelato, sherbert .azurewebsites.net
-  - AKS Endpoints: bluebell, gelato, sherbert .cloudapp.centralus.azure.net
-- standardize dashboards
-- standardize Azure health checks
+  - AppSvc endpoints: $He_Name.azurewebsites.net
+- standardize dashboard
+- standardize Azure health check
 - standardize alerting
 
 > Visual Studio Codespaces is the easiest way to evaluate helium as all of the prerequisites are automatically installed
@@ -174,14 +155,6 @@ cat terraform.tfvars
 
 Optionally edit terraform.tfvars and replace `centralus` with a different location
 
-## Instances
-
-Optionally edit terraform.tfvars and replace the value of instances with the environment(s) you want to deploy
-
-TODO - for the customer version of helium-iac, I think we need to get rid of instances since they will only deploy one language.
-
-There was a comment that they might want to deploy dev, test, prod, etc. but I don't think instances is how they would do that. I think they would have different TF scripts / values for each version. Likely in different subscriptions. Likely different permissions.
-
 ## Deploy `helium`
 
 ``` bash
@@ -203,7 +176,7 @@ terraform apply
 
 ## Verify the deployment
 
-Log into the Azure portal and browse your four new resource groups, application insights instances and dashboard created for each of the container instances you created
+Log into the Azure portal and browse your three new resource groups
 
 > TODO - should we have CLI commands for this? like curl, http, webv
 >
