@@ -9,13 +9,6 @@
 
 ## TODO
 
-- In general
-  - helium-iac should automate the exact steps of the manual process (+ smoker, dashboard, alerts)
-  - given our testing scenario, we likely need a separate IaC
-
-- Should we add webv deployment to manual instructions?
-- Are Dashboard and alerts setup manually?
-
 - Web Deploy
   - the image is pulled from docker hub
     - should be loaded into ACR (done)
@@ -24,6 +17,10 @@
     - pull image from ACR using Key Vault credentials
   - ACR ci-cd webhook isn't setup
   - docker container logging isn't enabled
+
+- Should we add webv deployment to manual instructions for consistency?
+
+- need to test dashboard and alerts to make sure they are the same between manual setup and terraform setup
 
 - option to deploy to AKS is missing (I think this is OK - especially for this release)
 
