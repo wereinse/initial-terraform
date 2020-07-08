@@ -13,6 +13,8 @@
 * NAME        = var.NAME
 * LOCATION    = var.LOCATION
 * ACR_RG_NAME = azurerm_resource_group.helium-acr.name
+* acr
+* LOGINSERVER
 * }
 * ```
 */
@@ -23,11 +25,6 @@ resource azurerm_container_registry helium-acr {
   resource_group_name = var.ACR_RG_NAME
   admin_enabled       = false
   sku                 = "Standard"
-}
-
-output "acr" {
-  value       = azurerm_container_registry.helium-acr.name
-  description = "The name of the Azure Container Registry"
 }
 
 resource null_resource acr-access {
@@ -46,11 +43,10 @@ resource "azurerm_container_registry_webhook" "webhook" {
   location            = var.LOCATION
   resource_group_name = var.ACR_RG_NAME
   registry_name       = azurerm_container_registry.helium-acr.name
-
-  service_uri = "https://${var.NAME}.scm.azurewebsites.net/docker/hook"
-  status      = "enabled"
-  scope       = "${var.REPO}:latest"
-  actions     = ["push"]
+  service_uri         = "https://${var.NAME}.scm.azurewebsites.net/docker/hook"
+  status              = "enabled"
+  scope               = "${var.REPO}:latest"
+  actions             = ["push"]
   custom_headers = {
     "Content-Type" = "application/json"
   }

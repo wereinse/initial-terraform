@@ -29,3 +29,17 @@ variable "COSMOS_COL" {
   description = "The Cosmos DB collection name"
   default     = "movies"
 }
+variable "REPO" {
+  type        = string
+  description = "The helium repo"
+  default     = "helium-csharp"
+}
+variable "ACR_SP_ID" {
+  type        = string
+  description = "The ACR Service Principal ID"
+}
+
+variable "ACR_SP_SECRET" {
+  type        = string
+  description = "The ACR Service Principal secret"
+}

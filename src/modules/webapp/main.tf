@@ -81,25 +81,37 @@ resource azurerm_app_service helium-webapp {
   resource_group_name = var.APP_RG_NAME
   https_only          = false
   app_service_plan_id = azurerm_app_service_plan.helium-app-plan.id
+
   site_config {
     always_on                 = "true"
     app_command_line          = ""
-    linux_fx_version          = "DOCKER|retaildevcrew/${var.REPO}:stable"
+    linux_fx_version          = "DOCKER|${var.NAME}/${var.REPO}:latest"
     use_32_bit_worker_process = "true"
   }
-
   identity {
     type = "SystemAssigned"
+    }
+
+  logs {
+    http_logs {
+      file_system {
+        retention_in_days        =  30
+        retention_in_mb          = "100"
+      }
+    }
   }
 
   app_settings = {
     "WEBSITES_ENABLE_APP_SERVICE_STORAGE" = "false"
-    "DOCKER_REGISTRY_SERVER_URL"          = "https://index.docker.io"
+    "DOCKER_REGISTRY_SERVER_USERNAME"     = var.ACR_SP_ID
+    "DOCKER_REGISTRY_SERVER_PASSWORD"     = var.ACR_SP_SECRET
+// TODO - fix this
+//    DOCKER_REGISTRY_SERVER_PASSWORD = "@Microsoft.KeyVault(SecretUri=https://"${var.NAME-kv}".vault.azure.net/secrets/mysecret/ec96f02080254f109c51a1f14cdb1931)"
+    "DOCKER_REGISTRY_SERVER_URL"          = "https://${var.NAME}.azurecr.io"
     "DOCKER_ENABLE_CI"                    = "true"
     "KEYVAULT_NAME"                       = "${var.NAME}-kv"
   }
 }
-
 output "APP_SERVICE_DONE" {
   depends_on  = [azurerm_app_service.helium-webapp]
   value       = true

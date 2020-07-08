@@ -45,7 +45,7 @@ az account set -s {subscription name or Id}
 
 > All commands require you to be in `helium-terraform/src/root`
 
-#### Choose a unique DNS name
+### Choose a unique DNS name
 
 ```bash
 # this will be the prefix for all resources
@@ -108,29 +108,24 @@ sed -i "s/<<HE_CLIENT_SECRET>>/$(az ad sp create-for-rbac -n http://${He_Name}-t
 # replace TF_CLIENT_ID
 sed -i "s/<<HE_CLIENT_ID>>/$(az ad sp show --id http://${He_Name}-tf-sp --query appId -o tsv)/g" terraform.tfvars
 
-# create a service principal
-# replace ACR_SP_SECRET
-sed -i "s/<<HE_ACR_SP_SECRET>>/$(az ad sp create-for-rbac -n http://${He_Name}-acr-sp --query password -o tsv)/g" terraform.tfvars
+### Set email address
 
-# replace ACR_SP_ID
-sed -i "s/<<HE_ACR_SP_ID>>/$(az ad sp show --id http://${He_Name}-acr-sp --query objectId -o tsv)/g" terraform.tfvars
+```bash
 
-# validate the substitutions
-cat terraform.tfvars
+# this is used for sending alert emails
+export He_Email=replaceWithYourEmail
 
 ```
 
 ## Deploy `helium`
 
-``` bash
+# create tfvars file
+../create-tf-vars.sh
 
-# Initialize your terraform providers:
+# initialize
 terraform init
 
-# Format your terraform files:
-terraform fmt -recursive
-
-# Validate the terraform code is ready to apply:
+# validate
 terraform validate
 
 # If you have no errors you can create the resources
@@ -146,7 +141,8 @@ Log into the Azure portal and browse your five new resource groups
 
 > If the terraform plan command is redirected to a file, there will be secrets stored in that file!
 >
-> Be sure to not to remove the ignore *tfplan* in the .gitignore file
+> Be sure not to remove the ignore *tfplan* in the .gitignore file
+>
 
 ## Module Documentation
 
