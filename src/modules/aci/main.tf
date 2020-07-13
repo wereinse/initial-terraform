@@ -1,4 +1,4 @@
-f/**
+/**
 * # Module Properties
 *
 * This module is used to create the webvalidate instances needed for End to End testing of the [Helium](https://github.com/retaildevcrews/helium) Application stack
