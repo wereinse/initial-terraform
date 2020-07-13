@@ -52,7 +52,7 @@ Note: The evaluation frequency must be less than or equal to the window size.
 * LOCATION    = var.LOCATION
 * APP_RG_NAME = azurerm_resource_group.helium-app.name
 * TENANT_ID   = var.TF_TENANT_ID
-* COSMOS_URL  = "https://${module.db.cosmos_name}.documents.azure.com:443/"
+* COSMOS_URL  = "https://${var.NAME}.documents.azure.com:443/"
 * COSMOS_KEY  = module.db.ro_key
 * COSMOS_DB   = "imdb"
 * COSMOS_COL  = "movies"
@@ -67,8 +67,8 @@ resource azurerm_app_service_plan helium-app-plan {
   kind                = "linux"
   reserved            = true
   sku {
-    tier = "Basic"
-    size = "B2"
+    tier = "Standard"
+    size = "S1"
   }
 }
 
@@ -85,9 +85,10 @@ resource azurerm_app_service helium-webapp {
   site_config {
     always_on                 = "true"
     app_command_line          = ""
-    linux_fx_version          = "DOCKER|retaildevcrew/${var.REPO}:stable"
-    use_32_bit_worker_process = "false"
+    linux_fx_version          = "DOCKER|${var.NAME}.azurecr.io/${var.REPO}:latest"
+    use_32_bit_worker_process = "true"
   }
+
   identity {
     type = "SystemAssigned"
     }
@@ -95,23 +96,23 @@ resource azurerm_app_service helium-webapp {
   logs {
     http_logs {
       file_system {
-        retention_in_days        =  30
-        retention_in_mb          = "100"
+        retention_in_days = 30
+        retention_in_mb   = 100
       }
     }
   }
 
   app_settings = {
     "WEBSITES_ENABLE_APP_SERVICE_STORAGE" = "true"
-    # TODO - fix this
-    # "DOCKER_REGISTRY_SERVER_USERNAME"     = var.ACR_SP_ID
-    # "DOCKER_REGISTRY_SERVER_PASSWORD"     = var.ACR_SP_SECRET
-    # DOCKER_REGISTRY_SERVER_PASSWORD = "@Microsoft.KeyVault(SecretUri=https://"${var.NAME-kv}".vault.azure.net/secrets/mysecret/ec96f02080254f109c51a1f14cdb1931)"
-    #"DOCKER_REGISTRY_SERVER_URL"          = "https://${var.NAME}.azurecr.io"
-    #"DOCKER_ENABLE_CI"                    = "true"
+    "WEBSITES_ENABLE_APP_SERVICE_STORAGE" = "true"
+    "DOCKER_REGISTRY_SERVER_USERNAME"     = "@Microsoft.KeyVault(SecretUri=${azurerm_key_vault_secret.acr_sp_id.id})"
+    "DOCKER_REGISTRY_SERVER_PASSWORD"     = "@Microsoft.KeyVault(SecretUri=${azurerm_key_vault_secret.acr_sp_secret.id})"
+    "DOCKER_REGISTRY_SERVER_URL"          = "https://${var.NAME}.azurecr.io"
+    "DOCKER_ENABLE_CI"                    = "true"
     "KEYVAULT_NAME"                       = "${var.NAME}-kv"
   }
 }
+
 output "APP_SERVICE_DONE" {
   depends_on  = [azurerm_app_service.helium-webapp]
   value       = true
