@@ -128,7 +128,7 @@ module "aci" {
   source              = "../modules/aci"
   NAME                = var.NAME
   LOCATION            = var.LOCATION
-  WEBV_INSTANCES      = var.WEBV_INSTANCES
+  INSTANCE            = var.INSTANCE
   REPO                = var.REPO
   CONTAINER_FILE_NAME = var.CONTAINER_FILE_NAME
   ACI_RG_NAME         = azurerm_resource_group.init-aci.name

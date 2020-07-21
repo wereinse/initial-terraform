@@ -1,7 +1,7 @@
 resource "random_uuid" "appsguid" {}
 resource "random_uuid" "webtestguid" {}
 
-resource "azurerm_monitor_action_group" "helium-action-group" {
+resource "azurerm_monitor_action_group" "init-action-group" {
   name                      = "${var.NAME}-action-group"
   resource_group_name       = var.APP_RG_NAME
   short_name                = var.NAME
@@ -12,10 +12,10 @@ resource "azurerm_monitor_action_group" "helium-action-group" {
   }
 }
 
-resource "azurerm_application_insights_web_test" "helium-web-test" {
+resource "azurerm_application_insights_web_test" "init-web-test" {
   depends_on              = [
     var.APP_SERVICE_DONE,
-    azurerm_monitor_action_group.helium-action-group
+    azurerm_monitor_action_group.init-action-group
   ]
   name                    = "${var.NAME}-web-test"
   location                = var.LOCATION
@@ -37,7 +37,7 @@ XML
 }
 
 resource "azurerm_monitor_metric_alert" "response-time-alert" {
-  depends_on          = [ azurerm_application_insights_web_test.helium-web-test ]
+  depends_on          = [ azurerm_application_insights_web_test.init-web-test ]
   name                = "${var.NAME}-response-time-alert"
   resource_group_name = var.APP_RG_NAME
   scopes              = [azurerm_application_insights.helium.id]
@@ -55,12 +55,12 @@ resource "azurerm_monitor_metric_alert" "response-time-alert" {
     threshold        = var.RT_THRESHOLD
   }
   action {
-    action_group_id   = azurerm_monitor_action_group.helium-action-group.id
+    action_group_id   = azurerm_monitor_action_group.init-action-group.id
   }
 }
 
 resource "azurerm_monitor_metric_alert" "requests-too-high-alert" {
-  depends_on          = [ azurerm_application_insights_web_test.helium-web-test ]
+  depends_on          = [ azurerm_application_insights_web_test.init-web-test ]
   name                = "${var.NAME}-requests-too-high-alert"
   resource_group_name = var.APP_RG_NAME
   scopes              = [azurerm_application_insights.helium.id]
@@ -78,12 +78,12 @@ resource "azurerm_monitor_metric_alert" "requests-too-high-alert" {
     threshold        = var.MR_THRESHOLD
   }
   action {
-    action_group_id   = azurerm_monitor_action_group.helium-action-group.id
+    action_group_id   = azurerm_monitor_action_group.init-action-group.id
   }
 }
 
-resource "azurerm_monitor_metric_alert" "helium-web-test-alert" {
-  depends_on          = [ azurerm_application_insights_web_test.helium-web-test ]
+resource "azurerm_monitor_metric_alert" "init-web-test-alert" {
+  depends_on          = [ azurerm_application_insights_web_test.init-web-test ]
   name                = "${var.NAME}-web-test-alert"
   resource_group_name = var.APP_RG_NAME
   scopes              = [azurerm_application_insights.helium.id]
@@ -106,12 +106,12 @@ resource "azurerm_monitor_metric_alert" "helium-web-test-alert" {
     }
   }
   action {
-    action_group_id   = azurerm_monitor_action_group.helium-action-group.id
+    action_group_id   = azurerm_monitor_action_group.init-action-group.id
   }
 }
 
 resource "azurerm_monitor_metric_alert" "requests-too-low-alert" {
-  depends_on          = [ azurerm_application_insights_web_test.helium-web-test ]
+  depends_on          = [ azurerm_application_insights_web_test.init-web-test ]
   name                = "${var.NAME}-requests-too-low-alert"
   resource_group_name = var.APP_RG_NAME
   scopes              = [azurerm_application_insights.helium.id]
@@ -129,6 +129,6 @@ resource "azurerm_monitor_metric_alert" "requests-too-low-alert" {
     threshold          = var.WV_THRESHOLD
   }
   action {
-    action_group_id    = azurerm_monitor_action_group.helium-action-group.id
+    action_group_id    = azurerm_monitor_action_group.init-action-group.id
   }
 }

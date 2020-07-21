@@ -171,7 +171,7 @@ variable "WV_SEVERITY" {
   description = "The severity to assign to the alert with possible values of 0, 1, 2, 3, and 4 - the default is 3"
 }
 
-variable "WEBV_INSTANCES" {
+variable "INSTANCE" {
   type        = map(number)
-  description = "List of additional webv test locations"
+  description = "List of additional terraform instance locations"
 }

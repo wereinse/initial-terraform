@@ -25,6 +25,6 @@ variable "LOCATION" {
 
 variable "REPO" {
   type        = string
-  description = "The helium repo"
+  description = "The repo from which to pull the image"
 }
 
