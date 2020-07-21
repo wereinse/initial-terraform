@@ -97,7 +97,7 @@ module "web" {
   COSMOS_KEY        = module.db.ro_key
   COSMOS_DB         = var.COSMOS_DB
   COSMOS_COL        = var.COSMOS_COL
-  IMDB_IMPORT_DONE  = "${module.db.IMDB_IMPORT_DONE}"
+  DB_IMPORT_DONE    = "${module.db.DB_IMPORT_DONE}"
   APP_SERVICE_DONE  = "${module.web.APP_SERVICE_DONE}"
   ACI_DONE          = "${module.aci.ACI_DONE}"
   TF_SUB_ID         = var.TF_SUB_ID
