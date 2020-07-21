@@ -31,8 +31,8 @@ variable "COSMOS_COL" {
 }
 variable "REPO" {
   type        = string
-  description = "The helium repo"
-  default     = "helium-csharp"
+  description = "The repo from which to pull an image"
+  default     = "hello-world"
 }
 variable "ACR_SP_ID" {
   type        = string
