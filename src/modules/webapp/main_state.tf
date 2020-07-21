@@ -39,13 +39,13 @@ output "tfstate_primary_blob_connection_string" {
   description = "The read Only key for connecting to the blob in the tfstate storage account.  This is used to secure a valid tfstate file"
 }
 
-resource "azurerm_storage_container" "tfstate" {
+resource "azurerm_storage_container" "init-tfstate" {
   name                   = "${var.NAME}-tf-state"
   storage_account_name  = azurerm_storage_account.init-tfstate.name
   container_access_type = "private"
 }
 
-resource "azurerm_storage_blob" "tfstate" {
+resource "azurerm_storage_blob" "init-tfstate" {
   depends_on             = [ var.ACI_DONE ]
   name                   = "terraform.tfstate"
   storage_account_name   = azurerm_storage_account.init-tfstate.name

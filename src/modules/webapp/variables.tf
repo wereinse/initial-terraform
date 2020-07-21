@@ -76,7 +76,7 @@ variable "REPO" {
   description = "The helium repo"
 }
 
-variable "IMDB_IMPORT_DONE" {
+variable "DB_IMPORT_DONE" {
   description = "ACI module dependency complete"
   type        = bool
 }
