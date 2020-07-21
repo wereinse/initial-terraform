@@ -1,12 +1,10 @@
-# Automatically deploy `helium` using terraform
+# Automatically deploy your infrastructure using terraform
 
-> This repository is used to automatically deploy [helium](https://github.com/retaildevcrews/helium) using [terraform](https://www.hashicorp.com/products/terraform)
+> This repository is used to automatically deploy infrastructure using [terraform](https://www.hashicorp.com/products/terraform)
 
 ![License](https://img.shields.io/badge/license-MIT-green.svg)
 
-> Visual Studio Codespaces is the easiest way to evaluate helium as all of the prerequisites are automatically installed
 >
-> Follow the setup steps in the [Helium readme](https://github.com/retaildevcrews/helium) to setup Codespaces
 
 ## Prerequisites
 
@@ -23,7 +21,7 @@
 ```bash
 
 # Clone this repo if not using Codespaces
-git clone https://github.com/retaildevcrews/helium-terraform
+git clone https://github.com/wereinse/helium-terraform.git
 
 cd helium-terraform/src/root
 

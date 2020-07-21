@@ -1,8 +1,8 @@
 # Parent Template Properties
 
-This is the parent Terraform Template used to call the component modules to create the infrastructure and deploy the [Helium](https://github.com/retaildevcrews/helium) application.
+This is the parent Terraform Template used to call the component modules to create the infrastructure and deploy  your application.
 
-The only resurces created in the template are the resource groups that each Service will go into. It is advised to create a terraform.tfvars file to assign values to the variables in the `variables.tf` file.
+The only resources created in the template are the resource groups that each Service will go into. It is advised to create a terraform.tfvars file to assign values to the variables in the `variables.tf` file.
 
 To keep sensitive keys from being stored on disk or source control you can set local environment variables that start with TF\_VAR\_\*\*NameOfVariable\*\*. This can be used with the Terraform Service Principal Variables
 
