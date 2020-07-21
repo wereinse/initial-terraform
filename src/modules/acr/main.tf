@@ -13,14 +13,14 @@
 *  NAME          = var.NAME
 *  LOCATION      = var.LOCATION
 *  REPO          = var.REPO
-*  ACR_RG_NAME   = azurerm_resource_group.init-acr.name
+*  ACR_RG_NAME   = azurerm_resource_group.acr.name
 *  ACR_SP_ID     = var.ACR_SP_ID
 *  ACR_SP_SECRET = var.ACR_SP_SECRET
 * }
 * ```
 */
 
-resource azurerm_container_registry init-acr {
+resource "azurerm_container_registry" "acr" {
   name                = var.NAME
   location            = var.LOCATION
   resource_group_name = var.ACR_RG_NAME
@@ -30,20 +30,20 @@ resource azurerm_container_registry init-acr {
 
 resource null_resource acr-access {
   provisioner "local-exec" {
-    command = "az role assignment create --scope ${azurerm_container_registry.init-acr.id} --role acrpull --assignee ${var.ACR_SP_ID}"
+    command = "az role assignment create --scope ${azurerm_container_registry.acr.id} --role acrpull --assignee ${var.ACR_SP_ID}"
   }
 }
 
 resource null_resource acr-import {
   provisioner "local-exec" {
-    command = "az acr import -n ${azurerm_container_registry.init-acr.name} --source docker.io/docker-library/${var.REPO}:stable --image ${var.REPO}:latest"
+    command = "az acr import -n ${azurerm_container_registry.acr.name} --source docker.io/docker-library/${var.REPO}:stable --image ${var.REPO}:latest"
   }
 }
 resource "azurerm_container_registry_webhook" "webhook" {
   name                = var.NAME
   location            = var.LOCATION
   resource_group_name = var.ACR_RG_NAME
-  registry_name       = azurerm_container_registry.init-acr.name
+  registry_name       = azurerm_container_registry.acr.name
   service_uri         = "https://${var.NAME}.scm.azurewebsites.net/docker/hook"
   status              = "enabled"
   scope               = "${var.REPO}:latest"

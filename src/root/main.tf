@@ -34,7 +34,7 @@ provider "azuread" {
   tenant_id       = var.TF_TENANT_ID
 }
 
-resource "azurerm_resource_group" "init-acr" {
+resource "azurerm_resource_group" "acr" {
   name     = "${var.NAME}-rg-acr"
   location = var.LOCATION
 }
@@ -44,17 +44,17 @@ resource "azurerm_resource_group" "cosmos" {
   location = var.LOCATION
 }
 
-resource "azurerm_resource_group" "init-app" {
+resource "azurerm_resource_group" "app" {
   name     = "${var.NAME}-rg-app"
   location = var.LOCATION
 }
 
-resource "azurerm_resource_group" "init-aci" {
+resource "azurerm_resource_group" "aci" {
   name     = "${var.NAME}-rg-webv"
   location = var.LOCATION
 }
 
-resource "azurerm_resource_group" "init-tfstate" {
+resource "azurerm_resource_group" "tfstate" {
   name     = "${var.NAME}-rg-tf"
   location = var.LOCATION
 }
@@ -64,7 +64,7 @@ module "acr" {
   NAME          = var.NAME
   LOCATION      = var.LOCATION
   REPO          = var.REPO
-  ACR_RG_NAME   = azurerm_resource_group.init-acr.name
+  ACR_RG_NAME   = azurerm_resource_group.acr.name
   ACR_SP_ID     = var.ACR_SP_ID
   ACR_SP_SECRET = var.ACR_SP_SECRET
 }
@@ -89,8 +89,8 @@ module "web" {
   REPO              = var.REPO
   ACR_SP_ID         = var.ACR_SP_ID
   ACR_SP_SECRET     = var.ACR_SP_SECRET
-  APP_RG_NAME       = azurerm_resource_group.init-app.name
-  TFSTATE_RG_NAME   = azurerm_resource_group.init-tfstate.name
+  APP_RG_NAME       = azurerm_resource_group.app.name
+  TFSTATE_RG_NAME   = azurerm_resource_group.tfstate.name
   TENANT_ID         = var.TF_TENANT_ID
   COSMOS_RG_NAME    = azurerm_resource_group.cosmos.name
   COSMOS_URL        = "https://${var.NAME}.documents.azure.com:443/"
@@ -131,6 +131,6 @@ module "aci" {
   INSTANCE            = var.INSTANCE
   REPO                = var.REPO
   CONTAINER_FILE_NAME = var.CONTAINER_FILE_NAME
-  ACI_RG_NAME         = azurerm_resource_group.init-aci.name
+  ACI_RG_NAME         = azurerm_resource_group.aci.name
   APP_SERVICE_DONE    = "${module.web.APP_SERVICE_DONE}"
 }

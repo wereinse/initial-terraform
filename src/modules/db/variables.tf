@@ -21,18 +21,18 @@ variable "COSMOS_RU" {
 variable "COSMOS_DB" {
   type        = string
   description = "The Cosmos DB database name"
-  default     = "imdb"
+  default     = "initdb"
 }
 
 variable "COSMOS_COL" {
   type        = string
   description = "The Cosmos DB collection name"
-  default     = "movies"
+  default     = "init-col-name"
 }
 variable "REPO" {
   type        = string
   description = "The repo from which to pull an image"
-  default     = "hello-world"
+  default     = "docker-library/hello-world"
 }
 variable "ACR_SP_ID" {
   type        = string

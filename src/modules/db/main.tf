@@ -46,24 +46,24 @@ output "ro_key" {
   description = "The read Only key for the CosmosDB to be used by the Application. This is used to pass into the webapp module"
 }
 
-resource "azurerm_cosmosdb_sql_database" "init-cosmosdb" {
+resource "azurerm_cosmosdb_sql_database" "cosmosdb" {
   name                = var.COSMOS_DB
   resource_group_name = var.COSMOS_RG_NAME
   account_name        = azurerm_cosmosdb_account.cosmosdb.name
   throughput          = var.COSMOS_RU
 }
 
-resource "azurerm_cosmosdb_sql_container" "init-cosmosdb-container" {
+resource "azurerm_cosmosdb_sql_container" "cosmosdbcontainer" {
   name                = var.COSMOS_COL
   resource_group_name = var.COSMOS_RG_NAME
   account_name        = azurerm_cosmosdb_account.cosmosdb.name
-  database_name       = azurerm_cosmosdb_sql_database.init-cosmosdb.name
+  database_name       = azurerm_cosmosdb_sql_database.cosmosdb.name
   partition_key_path  = "/partitionKey"
 }
 
 resource null_resource db-import {
   provisioner "local-exec" {
-    command = "docker pull docker-library/${var.REPO}:latest && docker run --rm --name db-import ${var.REPO}:latest \"${azurerm_cosmosdb_account.cosmosdb.name}\" \"${azurerm_cosmosdb_account.cosmosdb.primary_master_key}\" \"${azurerm_cosmosdb_sql_database.init-cosmosdb.name}\" \"${azurerm_cosmosdb_sql_container.init-cosmosdb-container.name}\""
+    command = "docker pull docker-library/${var.REPO}:latest && docker run --rm --name db-import ${var.REPO}:latest \"${azurerm_cosmosdb_account.cosmosdb.name}\" \"${azurerm_cosmosdb_account.cosmosdb.primary_master_key}\" \"${azurerm_cosmosdb_sql_database.cosmosdb.name}\" \"${azurerm_cosmosdb_sql_container.cosmosdbcontainer.name}\""
   }
 }
 
