@@ -63,9 +63,11 @@ resource "azurerm_cosmosdb_sql_container" "cosmosdbcontainer" {
 
 resource null_resource db-import {
   provisioner "local-exec" {
-    command = "docker pull docker-library/${var.REPO}:latest && docker run --rm --name db-import ${var.REPO}:latest \"${azurerm_cosmosdb_account.cosmosdb.name}\" \"${azurerm_cosmosdb_account.cosmosdb.primary_master_key}\" \"${azurerm_cosmosdb_sql_database.cosmosdb.name}\" \"${azurerm_cosmosdb_sql_container.cosmosdbcontainer.name}\""
+    command = "docker pull hello-world:latest && docker run --rm --name \"${var.NAME}\" hello-world:latest" 
   }
 }
+
+// was --name db-import   \"${azurerm_cosmosdb_account.cosmosdb.name}\" \"${azurerm_cosmosdb_account.cosmosdb.primary_master_key}\" \"${azurerm_cosmosdb_sql_database.cosmosdb.name}\" \"${azurerm_cosmosdb_sql_container.cosmosdbcontainer.name}\""
 
 output "DB_IMPORT_DONE" {
   depends_on  = [null_resource.db-import]
@@ -73,6 +75,6 @@ output "DB_IMPORT_DONE" {
   description = "db-import complete"
 }
 
-data "docker_registry_image" "db-import" {
-  name        = var.REPO
-}
+// data "docker_registry_image" "db-import" {
+//   name        = var.REPO
+//}

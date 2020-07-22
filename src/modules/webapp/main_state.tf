@@ -10,7 +10,7 @@ resource "random_string" "unique" {
 }
 
 resource "azurerm_storage_account" "tfstate" {
-  name                      = "${var.NAME}-${random_string.unique.result}"
+  name                      = "${var.NAME}${random_string.unique.result}"
   resource_group_name       = var.TFSTATE_RG_NAME
   location                  = var.LOCATION
   account_tier              = "Standard"

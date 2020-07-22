@@ -20,6 +20,12 @@
 * ```
 */
 
+resource "random_string" "unique" {
+  length  = 6
+  special = false
+  upper   = false
+}
+
 resource "azurerm_container_registry" "acr" {
   name                = var.NAME
   location            = var.LOCATION
@@ -36,7 +42,7 @@ resource null_resource acr-access {
 
 resource null_resource acr-import {
   provisioner "local-exec" {
-    command = "az acr import -n ${azurerm_container_registry.acr.name} --source docker.io/docker-library/${var.REPO}:stable --image ${var.REPO}:latest"
+    command = "az acr import -n ${azurerm_container_registry.acr.name} --source ${var.REPO}"
   }
 }
 resource "azurerm_container_registry_webhook" "webhook" {
@@ -44,7 +50,7 @@ resource "azurerm_container_registry_webhook" "webhook" {
   location            = var.LOCATION
   resource_group_name = var.ACR_RG_NAME
   registry_name       = azurerm_container_registry.acr.name
-  service_uri         = "https://${var.NAME}.scm.azurewebsites.net/docker/hook"
+  service_uri         = "https://${var.NAME}-aci.scm.azurewebsites.net/docker/hook"
   status              = "enabled"
   scope               = "${var.REPO}:latest"
   actions             = ["push"]

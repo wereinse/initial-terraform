@@ -32,16 +32,15 @@ resource "azurerm_container_group" aci {
     azurerm_log_analytics_workspace.logs
   ]
   for_each            = var.INSTANCE
-  name                = "${var.NAME}-${each.key}"
+  name                = "${var.NAME}"
   location            = each.key
   resource_group_name = var.ACI_RG_NAME
   os_type             = "Linux"
 
   container {
-    name  = "${var.NAME}-${each.key}"
-    image = "docker-library/hello-world"
-    commands = ["docker",  "run",  "${var.REPO}:latest"]
-//    commands = ["dotnet", "../webvalidate.dll", "--server", "${var.NAME}", "--files", "${var.CONTAINER_FILE_NAME}", "--base-url", "https://raw.githubusercontent.com/docker-library/${var.REPO}/master/TestFiles/", "--run-loop", "--sleep", "${each.value}", "--summary-minutes", "5", "--json-log", "--tag", "${each.key}"]
+    name  = "${var.NAME}"
+    image = "hello-world"
+    commands = ["docker",  "run",  "hello-world:latest", "--server", "${var.NAME}", "--files", "${var.REPO}", "--json-log", "--tag", "${var.REPO}"]
     cpu      = "0.5"
     memory   = "1.5"
 
