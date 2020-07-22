@@ -24,10 +24,10 @@ variable "APP_SERVICE_DONE" {
 }
 
 variable "REPO" {
-  description = "helium repo to use"
+  description = "Docker image repo to use"
   type        = string
 }
 
-variable "WEBV_INSTANCES" {
+variable "INSTANCE" {
   type = map(string)
 }

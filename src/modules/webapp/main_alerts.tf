@@ -1,10 +1,10 @@
 resource "random_uuid" "appsguid" {}
 resource "random_uuid" "webtestguid" {}
 
-resource "azurerm_monitor_action_group" "helium-action-group" {
+resource "azurerm_monitor_action_group" "init-action-group" {
   name                      = "${var.NAME}-action-group"
   resource_group_name       = var.APP_RG_NAME
-  short_name                = "${var.NAME}"
+  short_name                = var.NAME
   email_receiver {
     name                    = "${var.NAME}-alert-receiver"
     email_address           = var.EMAIL_FOR_ALERTS
@@ -12,17 +12,17 @@ resource "azurerm_monitor_action_group" "helium-action-group" {
   }
 }
 
-resource "azurerm_application_insights_web_test" "helium-web-test" {
+resource "azurerm_application_insights_web_test" "init-web-test" {
   depends_on              = [
     var.APP_SERVICE_DONE,
-    azurerm_monitor_action_group.helium-action-group
+    azurerm_monitor_action_group.init-action-group
   ]
   name                    = "${var.NAME}-web-test"
   location                = var.LOCATION
   resource_group_name     = var.APP_RG_NAME
-  description             = "web test (/healthz)"
+  description             = "web test"
   enabled                 = "true"
-  application_insights_id = azurerm_application_insights.helium.id
+  application_insights_id = azurerm_application_insights.init-appIns.id
   kind                    = "ping"
   frequency               = 300
   timeout                 = 300
@@ -30,17 +30,17 @@ resource "azurerm_application_insights_web_test" "helium-web-test" {
   configuration           = <<XML
 <WebTest Name="WebTest1" Id="${random_uuid.appsguid.result}" Enabled="True" CssProjectStructure="" CssIteration="" Timeout="0" WorkItemIds="" xmlns="http://microsoft.com/schemas/VisualStudio/TeamTest/2010" Description="" CredentialUserName="" CredentialPassword="" PreAuthenticate="True" Proxy="default" StopOnError="False" RecordedResultFile="" ResultsLocale="">
   <Items>
-    <Request Method="GET" Guid="${random_uuid.webtestguid.result}" Version="1.1" Url="https://${var.NAME}.azurewebsites.net/healthz" ThinkTime="0" Timeout="300" ParseDependentRequests="True" FollowRedirects="True" RecordResult="True" Cache="False" ResponseTimeGoal="0" Encoding="utf-8" ExpectedHttpStatusCode="200" ExpectedResponseUrl="" ReportingName="" IgnoreHttpStatusCode="False" />
+    <Request Method="GET" Guid="${random_uuid.webtestguid.result}" Version="1.1" Url="https://${var.NAME}.azurewebsites.net/" ThinkTime="0" Timeout="300" ParseDependentRequests="True" FollowRedirects="True" RecordResult="True" Cache="False" ResponseTimeGoal="0" Encoding="utf-8" ExpectedHttpStatusCode="200" ExpectedResponseUrl="" ReportingName="" IgnoreHttpStatusCode="False" />
   </Items>
 </WebTest>
 XML
 }
 
 resource "azurerm_monitor_metric_alert" "response-time-alert" {
-  depends_on          = [ azurerm_application_insights_web_test.helium-web-test ]
+  depends_on          = [ azurerm_application_insights_web_test.init-web-test ]
   name                = "${var.NAME}-response-time-alert"
   resource_group_name = var.APP_RG_NAME
-  scopes              = [azurerm_application_insights.helium.id]
+  scopes              = [azurerm_application_insights.init-appIns.id]
   frequency           = var.RT_FREQUENCY
   window_size         = var.RT_WINDOW_SIZE
   description         = "Server Response Time Too High"
@@ -55,15 +55,15 @@ resource "azurerm_monitor_metric_alert" "response-time-alert" {
     threshold        = var.RT_THRESHOLD
   }
   action {
-    action_group_id   = azurerm_monitor_action_group.helium-action-group.id
+    action_group_id   = azurerm_monitor_action_group.init-action-group.id
   }
 }
 
 resource "azurerm_monitor_metric_alert" "requests-too-high-alert" {
-  depends_on          = [ azurerm_application_insights_web_test.helium-web-test ]
+  depends_on          = [ azurerm_application_insights_web_test.init-web-test ]
   name                = "${var.NAME}-requests-too-high-alert"
   resource_group_name = var.APP_RG_NAME
-  scopes              = [azurerm_application_insights.helium.id]
+  scopes              = [azurerm_application_insights.init-appIns.id]
   frequency           = var.MR_FREQUENCY
   window_size         = var.MR_WINDOW_SIZE
   description         = "Requests Too High"
@@ -78,15 +78,15 @@ resource "azurerm_monitor_metric_alert" "requests-too-high-alert" {
     threshold        = var.MR_THRESHOLD
   }
   action {
-    action_group_id   = azurerm_monitor_action_group.helium-action-group.id
+    action_group_id   = azurerm_monitor_action_group.init-action-group.id
   }
 }
 
-resource "azurerm_monitor_metric_alert" "helium-web-test-alert" {
-  depends_on          = [ azurerm_application_insights_web_test.helium-web-test ]
+resource "azurerm_monitor_metric_alert" "init-web-test-alert" {
+  depends_on          = [ azurerm_application_insights_web_test.init-web-test ]
   name                = "${var.NAME}-web-test-alert"
   resource_group_name = var.APP_RG_NAME
-  scopes              = [azurerm_application_insights.helium.id]
+  scopes              = [azurerm_application_insights.init-appIns.id]
   frequency           = var.WT_FREQUENCY
   window_size         = var.WT_WINDOW_SIZE
   description         = "Web Test Alert"
@@ -106,15 +106,15 @@ resource "azurerm_monitor_metric_alert" "helium-web-test-alert" {
     }
   }
   action {
-    action_group_id   = azurerm_monitor_action_group.helium-action-group.id
+    action_group_id   = azurerm_monitor_action_group.init-action-group.id
   }
 }
 
 resource "azurerm_monitor_metric_alert" "requests-too-low-alert" {
-  depends_on          = [ azurerm_application_insights_web_test.helium-web-test ]
+  depends_on          = [ azurerm_application_insights_web_test.init-web-test ]
   name                = "${var.NAME}-requests-too-low-alert"
   resource_group_name = var.APP_RG_NAME
-  scopes              = [azurerm_application_insights.helium.id]
+  scopes              = [azurerm_application_insights.init-appIns.id]
   frequency           = var.WV_FREQUENCY
   window_size         = var.WV_WINDOW_SIZE
   description         = "Requests Too Low"
@@ -129,6 +129,6 @@ resource "azurerm_monitor_metric_alert" "requests-too-low-alert" {
     threshold          = var.WV_THRESHOLD
   }
   action {
-    action_group_id    = azurerm_monitor_action_group.helium-action-group.id
+    action_group_id    = azurerm_monitor_action_group.init-action-group.id
   }
 }

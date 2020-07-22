@@ -9,12 +9,16 @@
 *
 * ```hcl
 * module "db" {
-* source         = "../modules/db"
-* COSMOS_RG_NAME = azurerm_resource_group.cosmos.name
-* NAME           = var.NAME
-* LOCATION       = var.LOCATION
-* COSMOS_RU      = var.COSMOS_RU
-* }
+*  source         = "../modules/db"
+*  NAME           = var.NAME
+*  LOCATION       = var.LOCATION
+*  COSMOS_RG_NAME = azurerm_resource_group.cosmos.name
+*  COSMOS_RU      = var.COSMOS_RU
+*  COSMOS_DB      = var.COSMOS_DB
+*  COSMOS_COL     = var.COSMOS_COL
+*  ACR_SP_ID      = var.ACR_SP_ID
+*  ACR_SP_SECRET  = var.ACR_SP_SECRET
+*}
 * ```
 */
 
@@ -39,38 +43,38 @@ resource "azurerm_cosmosdb_account" "cosmosdb" {
 output "ro_key" {
   value       = azurerm_cosmosdb_account.cosmosdb.primary_readonly_master_key
   sensitive   = true
-  description = "The read Only key for the CosmosDB to be used by the Helium Application. This is used to pass into the webapp module"
+  description = "The read Only key for the CosmosDB to be used by the Application. This is used to pass into the webapp module"
 }
 
-resource "azurerm_cosmosdb_sql_database" "cosmosdb-imdb" {
+resource "azurerm_cosmosdb_sql_database" "cosmosdb" {
   name                = var.COSMOS_DB
   resource_group_name = var.COSMOS_RG_NAME
   account_name        = azurerm_cosmosdb_account.cosmosdb.name
   throughput          = var.COSMOS_RU
 }
 
-resource "azurerm_cosmosdb_sql_container" "cosmosdb-movies" {
+resource "azurerm_cosmosdb_sql_container" "cosmosdbcontainer" {
   name                = var.COSMOS_COL
   resource_group_name = var.COSMOS_RG_NAME
   account_name        = azurerm_cosmosdb_account.cosmosdb.name
-  database_name       = azurerm_cosmosdb_sql_database.cosmosdb-imdb.name
+  database_name       = azurerm_cosmosdb_sql_database.cosmosdb.name
   partition_key_path  = "/partitionKey"
 }
 
-resource null_resource imdb-import {
+resource null_resource db-import {
   provisioner "local-exec" {
-    command = "docker pull retaildevcrew/imdb-import:latest && docker run --rm --name imdb-import retaildevcrew/imdb-import:latest \"${azurerm_cosmosdb_account.cosmosdb.name}\" \"${azurerm_cosmosdb_account.cosmosdb.primary_master_key}\" \"${azurerm_cosmosdb_sql_database.cosmosdb-imdb.name}\" \"${azurerm_cosmosdb_sql_container.cosmosdb-movies.name}\""
+    command = "docker pull hello-world:latest && docker run --rm --name \"${var.NAME}\" hello-world:latest" 
   }
 }
 
-output "IMDB_IMPORT_DONE" {
-  depends_on  = [null_resource.imdb-import]
-  value       = true
-  description = "imdb-import complete"
-}
-// found this in the h-iac repo - was missing from here
+// was --name db-import   \"${azurerm_cosmosdb_account.cosmosdb.name}\" \"${azurerm_cosmosdb_account.cosmosdb.primary_master_key}\" \"${azurerm_cosmosdb_sql_database.cosmosdb.name}\" \"${azurerm_cosmosdb_sql_container.cosmosdbcontainer.name}\""
 
-data "docker_registry_image" "imdb-import" {
-// TODO - use variable name
-  name = "retaildevcrew/imdb-import"
+output "DB_IMPORT_DONE" {
+  depends_on  = [null_resource.db-import]
+  value       = true
+  description = "db-import complete"
 }
+
+// data "docker_registry_image" "db-import" {
+//   name        = var.REPO
+//}

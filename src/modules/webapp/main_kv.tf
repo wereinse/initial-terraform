@@ -29,7 +29,7 @@ resource azurerm_key_vault kv {
 resource "azurerm_key_vault_access_policy" "web_app" {
   key_vault_id = azurerm_key_vault.kv.id
   tenant_id = var.TENANT_ID
-  object_id = azurerm_app_service.helium-webapp.identity.0.principal_id
+  object_id = azurerm_app_service.init-webapp.identity.0.principal_id
 
   secret_permissions = [
     "get",
@@ -64,7 +64,7 @@ resource "azurerm_key_vault_secret" "cosmoscol" {
 
 resource "azurerm_key_vault_secret" "appinsights" {
   name         = "AppInsightsKey"
-  value        = azurerm_application_insights.helium.instrumentation_key
+  value        = azurerm_application_insights.init-appIns.instrumentation_key
   key_vault_id = azurerm_key_vault.kv.id
 }
 
