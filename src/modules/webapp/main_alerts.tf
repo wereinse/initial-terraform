@@ -36,99 +36,99 @@ resource "azurerm_application_insights_web_test" "init-web-test" {
 XML
 }
 
-resource "azurerm_monitor_metric_alert" "response-time-alert" {
-  depends_on          = [ azurerm_application_insights_web_test.init-web-test ]
-  name                = "${var.NAME}-response-time-alert"
-  resource_group_name = var.APP_RG_NAME
-  scopes              = [azurerm_application_insights.init-appIns.id]
-  frequency           = var.RT_FREQUENCY
-  window_size         = var.RT_WINDOW_SIZE
-  description         = "Server Response Time Too High"
-  severity            = var.RT_SEVERITY
-  auto_mitigate       = "false"
-  enabled             = "false"
-  criteria {
-    metric_namespace = "Microsoft.Insights/components"
-    metric_name      = "requests/duration"
-    aggregation      = "Average"
-    operator         = var.RT_OPERATOR
-    threshold        = var.RT_THRESHOLD
-  }
-  action {
-    action_group_id   = azurerm_monitor_action_group.init-action-group.id
-  }
-}
+// resource "azurerm_monitor_metric_alert" "response-time-alert" {
+//   depends_on          = [ azurerm_application_insights_web_test.init-web-test ]
+//   name                = "${var.NAME}-response-time-alert"
+//   resource_group_name = var.APP_RG_NAME
+//   scopes              = [azurerm_application_insights.init-appIns.id]
+//   frequency           = var.RT_FREQUENCY
+//   window_size         = var.RT_WINDOW_SIZE
+//   description         = "Server Response Time Too High"
+//   severity            = var.RT_SEVERITY
+//   auto_mitigate       = "false"
+//   enabled             = "false"
+//   criteria {
+//     metric_namespace = "Microsoft.Insights/components"
+//     metric_name      = "requests/duration"
+//     aggregation      = "Average"
+//     operator         = var.RT_OPERATOR
+//     threshold        = var.RT_THRESHOLD
+//   }
+//   action {
+//     action_group_id   = azurerm_monitor_action_group.init-action-group.id
+//   }
+// }
 
-resource "azurerm_monitor_metric_alert" "requests-too-high-alert" {
-  depends_on          = [ azurerm_application_insights_web_test.init-web-test ]
-  name                = "${var.NAME}-requests-too-high-alert"
-  resource_group_name = var.APP_RG_NAME
-  scopes              = [azurerm_application_insights.init-appIns.id]
-  frequency           = var.MR_FREQUENCY
-  window_size         = var.MR_WINDOW_SIZE
-  description         = "Requests Too High"
-  severity            = var.MR_SEVERITY
-  auto_mitigate       = "false"
-  enabled             = "false"
-  criteria {
-    metric_namespace = "Microsoft.Insights/components"
-    metric_name      = "requests/count"
-    aggregation      = "Count"
-    operator         = var.MR_OPERATOR
-    threshold        = var.MR_THRESHOLD
-  }
-  action {
-    action_group_id   = azurerm_monitor_action_group.init-action-group.id
-  }
-}
+// resource "azurerm_monitor_metric_alert" "requests-too-high-alert" {
+//   depends_on          = [ azurerm_application_insights_web_test.init-web-test ]
+//   name                = "${var.NAME}-requests-too-high-alert"
+//   resource_group_name = var.APP_RG_NAME
+//   scopes              = [azurerm_application_insights.init-appIns.id]
+//   frequency           = var.MR_FREQUENCY
+//   window_size         = var.MR_WINDOW_SIZE
+//   description         = "Requests Too High"
+//   severity            = var.MR_SEVERITY
+//   auto_mitigate       = "false"
+//   enabled             = "false"
+//   criteria {
+//     metric_namespace = "Microsoft.Insights/components"
+//     metric_name      = "requests/count"
+//     aggregation      = "Count"
+//     operator         = var.MR_OPERATOR
+//     threshold        = var.MR_THRESHOLD
+//   }
+//   action {
+//     action_group_id   = azurerm_monitor_action_group.init-action-group.id
+//   }
+// }
 
-resource "azurerm_monitor_metric_alert" "init-web-test-alert" {
-  depends_on          = [ azurerm_application_insights_web_test.init-web-test ]
-  name                = "${var.NAME}-web-test-alert"
-  resource_group_name = var.APP_RG_NAME
-  scopes              = [azurerm_application_insights.init-appIns.id]
-  frequency           = var.WT_FREQUENCY
-  window_size         = var.WT_WINDOW_SIZE
-  description         = "Web Test Alert"
-  severity            = var.WT_SEVERITY
-  auto_mitigate       = "false"
-  enabled             = "false"
-  criteria {
-    metric_namespace  = "Microsoft.Insights/components"
-    metric_name       = "availabilityResults/availabilityPercentage"
-    aggregation       = "Average"
-    operator          = var.WT_OPERATOR
-    threshold         = var.WT_THRESHOLD
-    dimension {
-      name            = "availabilityResult/location"
-      operator        = "Include"
-      values          = ["*"]
-    }
-  }
-  action {
-    action_group_id   = azurerm_monitor_action_group.init-action-group.id
-  }
-}
+// resource "azurerm_monitor_metric_alert" "init-web-test-alert" {
+//   depends_on          = [ azurerm_application_insights_web_test.init-web-test ]
+//   name                = "${var.NAME}-web-test-alert"
+//   resource_group_name = var.APP_RG_NAME
+//   scopes              = [azurerm_application_insights.init-appIns.id]
+//   frequency           = var.WT_FREQUENCY
+//   window_size         = var.WT_WINDOW_SIZE
+//   description         = "Web Test Alert"
+//   severity            = var.WT_SEVERITY
+//   auto_mitigate       = "false"
+//   enabled             = "false"
+//   criteria {
+//     metric_namespace  = "Microsoft.Insights/components"
+//     metric_name       = "availabilityResults/availabilityPercentage"
+//     aggregation       = "Average"
+//     operator          = var.WT_OPERATOR
+//     threshold         = var.WT_THRESHOLD
+//     dimension {
+//       name            = "availabilityResult/location"
+//       operator        = "Include"
+//       values          = ["*"]
+//     }
+//   }
+//   action {
+//     action_group_id   = azurerm_monitor_action_group.init-action-group.id
+//   }
+// }
 
-resource "azurerm_monitor_metric_alert" "requests-too-low-alert" {
-  depends_on          = [ azurerm_application_insights_web_test.init-web-test ]
-  name                = "${var.NAME}-requests-too-low-alert"
-  resource_group_name = var.APP_RG_NAME
-  scopes              = [azurerm_application_insights.init-appIns.id]
-  frequency           = var.WV_FREQUENCY
-  window_size         = var.WV_WINDOW_SIZE
-  description         = "Requests Too Low"
-  severity            = var.WV_SEVERITY
-  auto_mitigate       = "false"
-  enabled             = "true"
-  criteria {
-    metric_namespace   = "Microsoft.Insights/components"
-    metric_name        = "requests/count"
-    aggregation        = "Count"
-    operator           = var.WV_OPERATOR
-    threshold          = var.WV_THRESHOLD
-  }
-  action {
-    action_group_id    = azurerm_monitor_action_group.init-action-group.id
-  }
-}
+// resource "azurerm_monitor_metric_alert" "requests-too-low-alert" {
+//   depends_on          = [ azurerm_application_insights_web_test.init-web-test ]
+//   name                = "${var.NAME}-requests-too-low-alert"
+//   resource_group_name = var.APP_RG_NAME
+//   scopes              = [azurerm_application_insights.init-appIns.id]
+//   frequency           = var.WV_FREQUENCY
+//   window_size         = var.WV_WINDOW_SIZE
+//   description         = "Requests Too Low"
+//   severity            = var.WV_SEVERITY
+//   auto_mitigate       = "false"
+//   enabled             = "true"
+//   criteria {
+//     metric_namespace   = "Microsoft.Insights/components"
+//     metric_name        = "requests/count"
+//     aggregation        = "Count"
+//     operator           = var.WV_OPERATOR
+//     threshold          = var.WV_THRESHOLD
+//   }
+//   action {
+//     action_group_id    = azurerm_monitor_action_group.init-action-group.id
+//   }
+// }

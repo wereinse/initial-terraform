@@ -175,3 +175,8 @@ variable "INSTANCE" {
   type        = map(number)
   description = "List of additional terraform instance locations"
 }
+
+variable "IMAGE_NAME" {
+  description = "Docker image to use"
+  type        = string
+}

@@ -32,14 +32,14 @@ resource "azurerm_container_group" aci {
     azurerm_log_analytics_workspace.logs
   ]
   for_each            = var.INSTANCE
-  name                = "${var.NAME}"
+  name                = var.NAME
   location            = each.key
   resource_group_name = var.ACI_RG_NAME
   os_type             = "Linux"
 
   container {
-    name  = "${var.NAME}"
-    image = "hello-world"
+    name  = var.NAME
+    image = var.IMAGE_NAME
     commands = ["docker",  "run",  "hello-world:latest", "--server", "${var.NAME}", "--files", "${var.REPO}", "--json-log", "--tag", "${var.REPO}"]
     cpu      = "0.5"
     memory   = "1.5"
