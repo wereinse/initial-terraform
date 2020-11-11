@@ -141,7 +141,6 @@ resource azurerm_app_service init-webapp {
     "KEYVAULT_NAME"                       = "${var.NAME}-kv"
   }
 }
-
 output "APP_SERVICE_DONE" {
   depends_on  = [azurerm_app_service.init-webapp]
   value       = true

@@ -59,6 +59,11 @@ resource "azurerm_resource_group" "aks" {
   location = var.LOCATION
 }
 
+resource "azurerm_resource_group" "aml" {
+  name     = "${var.NAME}-rg-aml"
+  location = var.LOCATION
+}
+
 resource "azurerm_resource_group" "tfstate" {
   name     = "${var.NAME}-rg-tf"
   location = var.LOCATION
@@ -149,4 +154,11 @@ module "aks" {
   TF_CLIENT_ID        = var.TF_CLIENT_ID
   TF_CLIENT_SECRET    = var.TF_CLIENT_SECRET
   REPO                = var.REPO
+}
+
+module "aml" {
+  source              = "../modules/aml"
+  NAME                = var.NAME
+  LOCATION            = var.LOCATION
+  AML_RG_NAME         = azurerm_resource_group.aml.name
 }

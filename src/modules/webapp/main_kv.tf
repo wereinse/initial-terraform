@@ -79,3 +79,8 @@ resource "azurerm_key_vault_secret" "acr_sp_id" {
   value        = var.ACR_SP_ID
   key_vault_id = azurerm_key_vault.kv.id
 }
+
+output "KEY_VAULT_ID" {
+  value       =   azurerm_key_vault.kv.id
+  description = "Key vault setup is complete"
+}
