@@ -54,6 +54,11 @@ resource "azurerm_resource_group" "aci" {
   location = var.LOCATION
 }
 
+resource "azurerm_resource_group" "aks" {
+  name     = "${var.NAME}-rg-aks"
+  location = var.LOCATION
+}
+
 resource "azurerm_resource_group" "tfstate" {
   name     = "${var.NAME}-rg-tf"
   location = var.LOCATION
@@ -128,9 +133,20 @@ module "aci" {
   source              = "../modules/aci"
   NAME                = var.NAME
   LOCATION            = var.LOCATION
+  IMAGE_NAME          = var.IMAGE_NAME
   INSTANCE            = var.INSTANCE
   REPO                = var.REPO
   CONTAINER_FILE_NAME = var.CONTAINER_FILE_NAME
   ACI_RG_NAME         = azurerm_resource_group.aci.name
   APP_SERVICE_DONE    = "${module.web.APP_SERVICE_DONE}"
+}
+
+module "aks" {
+  source              = "../modules/aks"
+  NAME                = var.NAME
+  LOCATION            = var.LOCATION
+  AKS_RG_NAME         = azurerm_resource_group.aks.name
+  TF_CLIENT_ID        = var.TF_CLIENT_ID
+  TF_CLIENT_SECRET    = var.TF_CLIENT_SECRET
+  REPO                = var.REPO
 }

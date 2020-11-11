@@ -39,7 +39,7 @@ resource "azurerm_container_group" aci {
 
   container {
     name  = var.NAME
-    image = "hello-world"
+    image = var.IMAGE_NAME
     commands = ["docker",  "run",  "hello-world:latest", "--server", "${var.NAME}", "--files", "${var.REPO}", "--json-log", "--tag", "${var.REPO}"]
     cpu      = "0.5"
     memory   = "1.5"

@@ -31,3 +31,8 @@ variable "REPO" {
 variable "INSTANCE" {
   type = map(string)
 }
+
+variable "IMAGE_NAME" {
+  description = "Docker image to use"
+  type        = string
+}
