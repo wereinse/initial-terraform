@@ -12,3 +12,13 @@ variable "AML_RG_NAME" {
   description = "Resource group to put AKS cluster in"
   type        = string
 }
+
+// variable "KEY_VAULT_ID" {
+//   description = "Key vault id to use to access Azure ML workspace"
+//   type        = string
+// }
+
+// variable "APP_INS_ID" {
+//   description = "Application Insights id to use to access Azure ML workspace"
+//   type        = string
+// }

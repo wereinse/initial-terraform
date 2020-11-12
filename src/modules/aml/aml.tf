@@ -10,8 +10,9 @@
 *  source        = "../modules/aml"
 *  NAME          = var.NAME
 *  LOCATION      = var.LOCATION
-*  REPO          = var.REPO
-*  AKS_RG_NAME   = azurerm_resource_group.aml.name
+*  APP_INS_ID    = var.APP_INS_ID
+*  KEY_VAULT_ID  = var.KEY_VAULT_ID
+*  AML_RG_NAME   = azurerm_resource_group.aml.name
 * }
 * ```
 */
@@ -22,13 +23,14 @@ resource "random_string" "unique" {
   length  = 6
   special = false
   upper   = false
+  number  = false
   keepers = {
     rg_id = "${var.AML_RG_NAME}"
   }
 }
 
 resource "azurerm_storage_account" "seven-storage" {
-  name                    = "${var.NAME}${random_string.unique.result}"-amlstorage
+  name                    = substr("${var.NAME}amlstorage${random_string.unique.result}", 0, 24)
   resource_group_name     = var.AML_RG_NAME
   location                = var.LOCATION
   account_tier              = "Standard"
@@ -48,16 +50,16 @@ output "amlwkspc_storage_secondary_key" {
   description = "The secondary read Only key for the aml workspace storage account."
 }
 
-resource "azurerm_machine_learning_workspace" "seven" {
-  name                    = "${var.NAME}"-amlwkspc
-  location                = var.LOCATION
-  resource_group_name     = var.AML_RG_NAME
-  application_insights_id = azurerm_application_insights.init-appIns.id
-  key_vault_id            = azurerm_key_vault.kv.id
-  storage_account_id      = azurerm_storage_account.seven-storage.id
+// resource "azurerm_machine_learning_workspace" "seven" {
+//   name                    = "${var.NAME}"-amlwkspc
+//   location                = var.LOCATION
+//   resource_group_name     = var.AML_RG_NAME
+//   application_insights_id = var.APP_INS_ID
+//   key_vault_id            = var.KEY_VAULT_ID
+//   storage_account_id      = azurerm_storage_account.seven-storage.id
 
-  identity {
-    type = "SystemAssigned"
-  }
-}
+//   identity {
+//     type = "SystemAssigned"
+//   }
+// }
 

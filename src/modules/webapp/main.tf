@@ -51,7 +51,7 @@ Note: The evaluation frequency must be less than or equal to the window size.
 *  LOCATION          = var.LOCATION
 *  REPO              = var.REPO
 *  ACR_SP_ID         = var.ACR_SP_ID
-* ACR_SP_SECRET     = var.ACR_SP_SECRET
+*  ACR_SP_SECRET     = var.ACR_SP_SECRET
 *  APP_RG_NAME       = azurerm_resource_group.init-app.name
 *  TFSTATE_RG_NAME   = azurerm_resource_group.init-tfstate.name
 *  TENANT_ID         = var.TF_TENANT_ID

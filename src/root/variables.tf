@@ -38,16 +38,6 @@ variable "LOCATION" {
   description = "The Azure Region in which all resources in this example should be created. Used by all modules"
 }
 
-variable "KEY_VAULT_ID" {
-  type        = string
-  description = "Key vault ID generated for webapp"
-}
-
-variable "APP_INS_ID" {
-  type        = string
-  description = "Application Insights ID"
-}
-
 variable "CONTAINER_FILE_NAME" {
   type        = string
   description = "The file name to pass to the container command. Used by the ACI Module"

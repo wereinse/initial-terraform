@@ -161,4 +161,6 @@ module "aml" {
   NAME                = var.NAME
   LOCATION            = var.LOCATION
   AML_RG_NAME         = azurerm_resource_group.aml.name
+  // KEY_VAULT_ID        = "${module.web.KEY_VAULT_ID}"
+  // APP_INS_ID          = "${module.web.APP_INS_ID}"
 }

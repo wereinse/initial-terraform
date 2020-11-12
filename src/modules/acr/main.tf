@@ -26,7 +26,7 @@ resource "random_string" "unique" {
   upper   = false
 }
 
-resource "azurerm_container_registry" "acr" {
+resource "azurerm_container_registry" "acrdefault" {
   name                = var.NAME
   location            = var.LOCATION
   resource_group_name = var.ACR_RG_NAME
@@ -36,20 +36,20 @@ resource "azurerm_container_registry" "acr" {
 
 resource null_resource acr-access {
   provisioner "local-exec" {
-    command = "az role assignment create --scope ${azurerm_container_registry.acr.id} --role acrpull --assignee ${var.ACR_SP_ID}"
+    command = "az role assignment create --scope ${azurerm_container_registry.acrdefault.id} --role acrpull --assignee ${var.ACR_SP_ID}"
   }
 }
 
 resource null_resource acr-import {
   provisioner "local-exec" {
-    command = "az acr import -n ${azurerm_container_registry.acr.name} --source ${var.REPO}"
+    command = "az acr import -n ${azurerm_container_registry.acrdefault.name} --source ${var.REPO} --username ${var.ACR_SP_ID} --password ${var.ACR_SP_SECRET}"
   }
 }
 resource "azurerm_container_registry_webhook" "webhook" {
   name                = var.NAME
   location            = var.LOCATION
   resource_group_name = var.ACR_RG_NAME
-  registry_name       = azurerm_container_registry.acr.name
+  registry_name       = azurerm_container_registry.acrdefault.name
   service_uri         = "https://${var.NAME}-aci.scm.azurewebsites.net/docker/hook"
   status              = "enabled"
   scope               = "${var.REPO}:latest"
