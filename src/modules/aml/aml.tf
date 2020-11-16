@@ -16,8 +16,40 @@
 * }
 * ```
 */
+data "azurerm_client_config" "current" {}
 
-data "azurerm_client_config" "tfstatecurrent" {}
+resource "azurerm_application_insights" "seven-appins" {
+  name                    = var.NAME
+  location                = var.LOCATION
+  resource_group_name     = var.AML_RG_NAME
+  application_type        = "web"
+}
+
+resource "azurerm_key_vault" "seven-kv" {
+  name                            = "${var.NAME}-${var.AMLWKSPC_NAME}"
+  location                        = var.LOCATION
+  resource_group_name             = var.AML_RG_NAME
+  tenant_id                       = data.azurerm_client_config.current.tenant_id
+  sku_name                        = "standard"
+  enabled_for_deployment          = false
+  enabled_for_disk_encryption     = false
+  enabled_for_template_deployment = false
+
+  access_policy {
+    tenant_id = data.azurerm_client_config.current.tenant_id
+    object_id = data.azurerm_client_config.current.object_id
+
+    secret_permissions = [
+      "Get",
+      "List",
+      "Set",
+      "Delete",
+      "Recover",
+      "Backup",
+      "Restore"
+    ]
+  }
+}
 
 resource "random_string" "unique" {
   length  = 6
@@ -25,7 +57,7 @@ resource "random_string" "unique" {
   upper   = false
   number  = false
   keepers = {
-    rg_id = "${var.AML_RG_NAME}"
+    rg_id = var.AML_RG_NAME
   }
 }
 
@@ -50,16 +82,15 @@ output "amlwkspc_storage_secondary_key" {
   description = "The secondary read Only key for the aml workspace storage account."
 }
 
-// resource "azurerm_machine_learning_workspace" "seven" {
-//   name                    = "${var.NAME}"-amlwkspc
-//   location                = var.LOCATION
-//   resource_group_name     = var.AML_RG_NAME
-//   application_insights_id = var.APP_INS_ID
-//   key_vault_id            = var.KEY_VAULT_ID
-//   storage_account_id      = azurerm_storage_account.seven-storage.id
+resource "azurerm_machine_learning_workspace" "seven" {
+  name                    = var.NAME
+  location                = var.LOCATION
+  resource_group_name     = var.AML_RG_NAME
+  application_insights_id = azurerm_application_insights.seven-appins.name
+  key_vault_id            = azurerm_key_vault.seven-kv.name
+  storage_account_id      = azurerm_storage_account.seven-storage.id
 
-//   identity {
-//     type = "SystemAssigned"
-//   }
-// }
-
+  identity {
+    type = "SystemAssigned"
+  }
+}

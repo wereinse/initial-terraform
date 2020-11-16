@@ -18,7 +18,7 @@
 */
 
 provider "azurerm" {
-  version = "2.0.0"
+  version = "2.36.0"
   features {}
 
   subscription_id = var.TF_SUB_ID
@@ -107,9 +107,9 @@ module "web" {
   COSMOS_KEY        = module.db.ro_key
   COSMOS_DB         = var.COSMOS_DB
   COSMOS_COL        = var.COSMOS_COL
-  DB_IMPORT_DONE    = "${module.db.DB_IMPORT_DONE}"
-  APP_SERVICE_DONE  = "${module.web.APP_SERVICE_DONE}"
-  ACI_DONE          = "${module.aci.ACI_DONE}"
+  DB_IMPORT_DONE    = module.db.DB_IMPORT_DONE
+  APP_SERVICE_DONE  = module.web.APP_SERVICE_DONE
+  ACI_DONE          = module.aci.ACI_DONE
   TF_SUB_ID         = var.TF_SUB_ID
   EMAIL_FOR_ALERTS  = var.EMAIL_FOR_ALERTS
   RT_THRESHOLD      = var.RT_THRESHOLD
@@ -143,7 +143,7 @@ module "aci" {
   REPO                = var.REPO
   CONTAINER_FILE_NAME = var.CONTAINER_FILE_NAME
   ACI_RG_NAME         = azurerm_resource_group.aci.name
-  APP_SERVICE_DONE    = "${module.web.APP_SERVICE_DONE}"
+  APP_SERVICE_DONE    = module.web.APP_SERVICE_DONE
 }
 
 module "aks" {
@@ -160,7 +160,6 @@ module "aml" {
   source              = "../modules/aml"
   NAME                = var.NAME
   LOCATION            = var.LOCATION
+  AMLWKSPC_NAME       = var.AMLWKSPC_NAME
   AML_RG_NAME         = azurerm_resource_group.aml.name
-  // KEY_VAULT_ID        = "${module.web.KEY_VAULT_ID}"
-  // APP_INS_ID          = "${module.web.APP_INS_ID}"
 }

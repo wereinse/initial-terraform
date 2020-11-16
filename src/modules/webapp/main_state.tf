@@ -5,7 +5,7 @@ resource "random_string" "unique" {
   special = false
   upper   = false
   keepers = {
-    rg_id = "${var.TFSTATE_RG_NAME}"
+    rg_id = var.TFSTATE_RG_NAME
   }
 }
 

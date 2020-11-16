@@ -180,3 +180,8 @@ variable "IMAGE_NAME" {
   description = "Docker image to use"
   type        = string
 }
+
+variable "AMLWKSPC_NAME" {
+  description = "Azure Machine Learning workspace name to add onto prefix name"
+  type        = string
+}
