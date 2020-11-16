@@ -16,10 +16,19 @@
 * }
 * ```
 */
+resource "random_string" "amlwkspc_unique" {
+  length  = 6
+  special = false
+  upper   = false
+  keepers = {
+    rg_id = var.AML_RG_NAME
+  }
+}
+
 data "azurerm_client_config" "current" {}
 
 resource "azurerm_application_insights" "seven-appins" {
-  name                    = var.NAME
+  name                    = "${var.NAME}-${random_string.amlwkspc_unique.result}"
   location                = var.LOCATION
   resource_group_name     = var.AML_RG_NAME
   application_type        = "web"
@@ -86,8 +95,8 @@ resource "azurerm_machine_learning_workspace" "seven" {
   name                    = var.NAME
   location                = var.LOCATION
   resource_group_name     = var.AML_RG_NAME
-  application_insights_id = azurerm_application_insights.seven-appins.name
-  key_vault_id            = azurerm_key_vault.seven-kv.name
+  application_insights_id = azurerm_application_insights.seven-appins.app_id
+  key_vault_id            = azurerm_key_vault.seven-kv.id
   storage_account_id      = azurerm_storage_account.seven-storage.id
 
   identity {
