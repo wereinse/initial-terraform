@@ -36,13 +36,13 @@ resource "azurerm_container_registry" "acrdefault" {
 
 resource null_resource acr-access {
   provisioner "local-exec" {
-    command = "az role assignment create --scope ${azurerm_container_registry.acrdefault.id} --role acrpull --assignee ${var.ACR_SP_ID}"
+  command = "az role assignment create --scope ${azurerm_container_registry.acrdefault.id} --role acrpull --assignee ${var.TF_CLIENT_ID}"
   }
 }
 
 resource null_resource acr-import {
   provisioner "local-exec" {
-    command = "az acr import -n ${azurerm_container_registry.acrdefault.name} --source ${var.REPO} --username ${var.ACR_SP_ID} --password ${var.ACR_SP_SECRET}"
+  command = "az acr import -n ${azurerm_container_registry.acrdefault.name} --source ${var.REPO} --username ${var.TF_CLIENT_ID} --password ${var.TF_CLIENT_SECRET}"
   }
 }
 resource "azurerm_container_registry_webhook" "webhook" {

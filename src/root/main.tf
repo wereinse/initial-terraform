@@ -32,6 +32,7 @@ provider "azuread" {
   client_id       = var.TF_CLIENT_ID
   client_secret   = var.TF_CLIENT_SECRET
   tenant_id       = var.TF_TENANT_ID
+  use_msi         = true
 }
 
 resource "azurerm_resource_group" "acr" {
@@ -75,8 +76,10 @@ module "acr" {
   LOCATION      = var.LOCATION
   REPO          = var.REPO
   ACR_RG_NAME   = azurerm_resource_group.acr.name
-  ACR_SP_ID     = var.ACR_SP_ID
-  ACR_SP_SECRET = var.ACR_SP_SECRET
+  // ACR_SP_ID     = var.ACR_SP_ID
+  // ACR_SP_SECRET = var.ACR_SP_SECRET
+  TF_CLIENT_ID  = var.TF_CLIENT_ID
+  TF_CLIENT_SECRET = var.TF_CLIENT_SECRET
 }
 
 module "db" {

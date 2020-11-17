@@ -101,11 +101,20 @@ resource azurerm_app_service_plan init-app-plan {
   }
 }
 
+resource "random_string" "webapp" {
+  length  = 6
+  special = false
+  upper   = false
+  keepers = {
+    rg_id = var.APP_RG_NAME
+  }
+}
+
 resource azurerm_app_service init-webapp {
   depends_on = [
     var.DB_IMPORT_DONE
   ]
-  name                = var.NAME
+  name                = substr("${var.NAME}-${random_string.webapp.result}", 0, 24)
   location            = var.LOCATION
   resource_group_name = var.APP_RG_NAME
   https_only          = false

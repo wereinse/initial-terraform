@@ -31,7 +31,18 @@ resource "azurerm_application_insights" "seven-appins" {
   name                    = "${var.NAME}-${random_string.amlwkspc_unique.result}"
   location                = var.LOCATION
   resource_group_name     = var.AML_RG_NAME
-  application_type        = "web"
+  application_type        = "other"
+}
+
+output "instrumentation_key" {
+  value       = azurerm_application_insights.seven-appins.instrumentation_key
+  sensitive   = true
+  description = "The primary read Only key for the aml workspace storage account."
+}
+
+output "app_id" {
+  value       = azurerm_application_insights.seven-appins.app_id
+  description = "The primary read Only key for the aml workspace storage account."
 }
 
 resource "azurerm_key_vault" "seven-kv" {
@@ -95,7 +106,7 @@ resource "azurerm_machine_learning_workspace" "seven" {
   name                    = var.NAME
   location                = var.LOCATION
   resource_group_name     = var.AML_RG_NAME
-  application_insights_id = azurerm_application_insights.seven-appins.app_id
+  application_insights_id = azurerm_application_insights.seven-appins.id
   key_vault_id            = azurerm_key_vault.seven-kv.id
   storage_account_id      = azurerm_storage_account.seven-storage.id
 
